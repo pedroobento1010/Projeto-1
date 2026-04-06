@@ -49,8 +49,24 @@
     <!-- ÁREA DE RESULTADOS (ESQUERDA - GRID DE 3 COLUNAS) -->
     <section class="results-section" id="results-section">
       <div class="results-header">
-        <h2 class="section-title">🎯 Jogos Recomendados</h2>
-        <span class="results-count" id="results-count">Carregando...</span>
+        <div class="header-top">
+          <h2 class="section-title">🎯 Jogos Recomendados</h2>
+          <span class="results-count" id="results-count">Carregando...</span>
+        </div>
+        <div class="sort-controls">
+          <label for="sort-select">🔀 Ordenar por:</label>
+          <select id="sort-select" class="sort-select">
+            <option value="nome">Nome (A-Z)</option>
+            <option value="lancamento-desc">Data de Lançamento (Mais Recentes)</option>
+            <option value="lancamento-asc">Data de Lançamento (Mais Antigos)</option>
+            <option value="tamanho-asc">Tamanho (Menor)</option>
+            <option value="tamanho-desc">Tamanho (Maior)</option>
+            <option value="cpu-asc">Exigência CPU (Menor)</option>
+            <option value="cpu-desc">Exigência CPU (Maior)</option>
+            <option value="gpu-asc">Exigência GPU (Menor)</option>
+            <option value="gpu-desc">Exigência GPU (Maior)</option>
+          </select>
+        </div>
       </div>
 
       <!-- Grid de cards -->
@@ -129,6 +145,23 @@
               <label class="checkbox-item"><input type="checkbox" class="filter-check" value="N64" checked><span>N64</span></label>
             </div>
           </div>
+          <!-- GÊNEROS -->
+          <div class="filter-group">
+            <label class="group-label">🎮 Gêneros</label>
+            <div class="checkbox-grid">
+              <label class="checkbox-item"><input type="checkbox" class="filter-genre" value="Ação" checked><span>Ação</span></label>
+              <label class="checkbox-item"><input type="checkbox" class="filter-genre" value="RPG" checked><span>RPG</span></label>
+              <label class="checkbox-item"><input type="checkbox" class="filter-genre" value="Plataforma" checked><span>Plataforma</span></label>
+              <label class="checkbox-item"><input type="checkbox" class="filter-genre" value="FPS" checked><span>FPS</span></label>
+              <label class="checkbox-item"><input type="checkbox" class="filter-genre" value="Luta" checked><span>Luta</span></label>
+              <label class="checkbox-item"><input type="checkbox" class="filter-genre" value="Aventura" checked><span>Aventura</span></label>
+              <label class="checkbox-item"><input type="checkbox" class="filter-genre" value="Horror" checked><span>Horror</span></label>
+              <label class="checkbox-item"><input type="checkbox" class="filter-genre" value="Corrida" checked><span>Corrida</span></label>
+              <label class="checkbox-item"><input type="checkbox" class="filter-genre" value="Puzzle" checked><span>Puzzle</span></label>
+              <label class="checkbox-item"><input type="checkbox" class="filter-genre" value="Sandbox" checked><span>Sandbox</span></label>
+            </div>
+          </div>
+
 
           <button id="btn-reset" class="btn-secondary">✖ Resetar Filtros</button>
 

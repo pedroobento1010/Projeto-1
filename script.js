@@ -1,5 +1,5 @@
 /**
- * GameMatch PC — script.js Final Refinado
+ * Sabor Gamer — script.js Final Refinado
  */
 
 // ============================================================
@@ -23,6 +23,7 @@ const valCpu = document.getElementById("val-cpu");
 const valGpu = document.getElementById("val-gpu");
 
 const filterChecks = document.querySelectorAll(".filter-check");
+const filterGenres = document.querySelectorAll(".filter-genre");
 
 const btnReset   = document.getElementById("btn-reset");
 const cardsGrid  = document.getElementById("cards-grid");
@@ -42,6 +43,10 @@ const navAbout = document.getElementById("nav-about");
 // Referências do Dropdown
 const dropBtn = document.querySelector(".dropbtn");
 const dropdownContent = document.querySelector(".dropdown-content");
+
+// Referências de Ordenação
+const sortSelect = document.getElementById("sort-select");
+let ordemAtual = "nome";
 
 // ============================================================
 // Banco de dados de jogos
@@ -70,9 +75,20 @@ function configurarEventos() {
   rangeCpu.addEventListener("input", atualizarFiltros);
   rangeGpu.addEventListener("input", atualizarFiltros);
   
-  // Checkboxes
+  // Ordenação
+  sortSelect.addEventListener("change", (e) => {
+    ordemAtual = e.target.value;
+    atualizarFiltros();
+  });
+  
+  // Checkboxes de Plataforma
   filterChecks.forEach(check => {
     check.addEventListener("change", atualizarFiltros);
+  });
+  
+  // Checkboxes de Gênero
+  filterGenres.forEach(genre => {
+    genre.addEventListener("change", atualizarFiltros);
   });
   
   // Botões
@@ -94,7 +110,7 @@ function configurarEventos() {
 
   navAbout.addEventListener("click", (e) => {
     e.preventDefault();
-    alert("GameMatch PC - Projeto College\n\nEste site foi desenvolvido como um projeto acadêmico para ajudar usuários com computadores limitados a encontrar jogos compatíveis e otimizar seu hardware.");
+    alert("Sabor Gamer - Projeto College\n\nEste site foi desenvolvido como um projeto acadêmico para ajudar usuários com computadores limitados a encontrar jogos compatíveis e otimizar seu hardware.");
   });
 
   // Lógica do Dropdown de Emuladores (Clique para abrir/fechar)
@@ -126,6 +142,10 @@ function atualizarFiltros() {
   const plataformasSelecionadas = Array.from(filterChecks)
     .filter(c => c.checked)
     .map(c => c.value);
+  
+  const generosSelecionados = Array.from(filterGenres)
+    .filter(c => c.checked)
+    .map(c => c.value);
 
   valRam.textContent = `${ram} GB`;
   valCpu.textContent = capitalizar(cpu);
@@ -136,35 +156,64 @@ function atualizarFiltros() {
     const cpuOk = CPU_ORDEM[jogo.cpu] <= CPU_ORDEM[cpu];
     const gpuOk = GPU_ORDEM[jogo.gpu] <= GPU_ORDEM[gpu];
     const plataformaOk = plataformasSelecionadas.includes(jogo.tipo);
-    return ramOk && cpuOk && gpuOk && plataformaOk;
+    const generoOk = generosSelecionados.some(genero => jogo.genero.includes(genero));
+    return ramOk && cpuOk && gpuOk && plataformaOk && generoOk;
   });
 
   renderizarJogos(compativeis);
 }
 
 function renderizarJogos(jogos) {
+  // Aplicar ordenação
+  let jogosOrdenados = [...jogos];
+  
+  if (ordemAtual === "nome") {
+    jogosOrdenados.sort((a, b) => a.nome.localeCompare(b.nome));
+  } else if (ordemAtual === "lancamento-desc") {
+    jogosOrdenados.sort((a, b) => b.lancamento - a.lancamento);
+  } else if (ordemAtual === "lancamento-asc") {
+    jogosOrdenados.sort((a, b) => a.lancamento - b.lancamento);
+  } else if (ordemAtual === "tamanho-asc") {
+    jogosOrdenados.sort((a, b) => {
+      const sizeA = parseFloat(a.tamanho) * (a.tamanho.includes("GB") ? 1024 : 1);
+      const sizeB = parseFloat(b.tamanho) * (b.tamanho.includes("GB") ? 1024 : 1);
+      return sizeA - sizeB;
+    });
+  } else if (ordemAtual === "tamanho-desc") {
+    jogosOrdenados.sort((a, b) => {
+      const sizeA = parseFloat(a.tamanho) * (a.tamanho.includes("GB") ? 1024 : 1);
+      const sizeB = parseFloat(b.tamanho) * (b.tamanho.includes("GB") ? 1024 : 1);
+      return sizeB - sizeA;
+    });
+  } else if (ordemAtual === "gpu-asc") {
+    jogosOrdenados.sort((a, b) => GPU_ORDEM[a.gpu] - GPU_ORDEM[b.gpu]);
+  } else if (ordemAtual === "gpu-desc") {
+    jogosOrdenados.sort((a, b) => GPU_ORDEM[b.gpu] - GPU_ORDEM[a.gpu]);
+  } else if (ordemAtual === "cpu-asc") {
+    jogosOrdenados.sort((a, b) => CPU_ORDEM[a.cpu] - CPU_ORDEM[b.cpu]);
+  } else if (ordemAtual === "cpu-desc") {
+    jogosOrdenados.sort((a, b) => CPU_ORDEM[b.cpu] - CPU_ORDEM[a.cpu]);
+  }
+  
   cardsGrid.innerHTML = "";
-  resultsCount.textContent = `${jogos.length} jogo${jogos.length !== 1 ? "s" : ""} encontrado${jogos.length !== 1 ? "s" : ""}`;
+  resultsCount.textContent = `${jogosOrdenados.length} jogo${jogosOrdenados.length !== 1 ? "s" : ""} encontrado${jogosOrdenados.length !== 1 ? "s" : ""}`;
 
-  if (jogos.length === 0) {
+  if (jogosOrdenados.length === 0) {
     stateEmpty.classList.remove("hidden");
   } else {
     stateEmpty.classList.add("hidden");
-    jogos.forEach(jogo => {
+    jogosOrdenados.forEach(jogo => {
       const card = document.createElement("article");
       card.className = "game-card";
       card.innerHTML = `
-        <div class="card-image-container">
-          <img src="${jogo.imagem}" alt="${jogo.nome}" class="card-image">
-          <span class="card-type-badge">${jogo.tipo}</span>
-        </div>
+        <div class="card-color-bar" style="background-color: ${jogo.cor}"></div>
         <div class="card-content">
           <div class="card-header">
             <div>
               <h3 class="card-title">${escaparHTML(jogo.nome)}</h3>
               <p class="card-genre">${escaparHTML(jogo.genero)}</p>
             </div>
-            <span class="card-compat-badge">✓ Compatível</span>
+            <span class="card-type-badge">${jogo.tipo}</span>
           </div>
           <p class="card-description">${escaparHTML(jogo.descricao)}</p>
           <div class="card-specs">
@@ -193,24 +242,46 @@ function abrirModal(jogo) {
   const btnText = isSteam ? "🛒 Ver na Steam" : "📥 Baixar Direto (ISO)";
   
   modalBody.innerHTML = `
-    <img src="${jogo.imagem}" alt="${jogo.nome}" class="modal-image">
     <div class="modal-info">
       <h2 class="modal-title">${escaparHTML(jogo.nome)}</h2>
       <span class="modal-genre-tag">${escaparHTML(jogo.genero)} | ${jogo.tipo}</span>
-      <p class="modal-description">${escaparHTML(jogo.detalhes)}</p>
       
-      <div class="modal-specs-grid">
-        <div class="modal-spec-item">
-          <span class="modal-spec-label">RAM Mínima</span>
-          <span class="modal-spec-value">${jogo.ram} GB</span>
+      <div class="modal-specs-table">
+        <div class="table-row">
+          <span class="table-label">💾 RAM Mínima</span>
+          <span class="table-value">${jogo.ram} GB</span>
         </div>
-        <div class="modal-spec-item">
-          <span class="modal-spec-label">CPU Mínima</span>
-          <span class="modal-spec-value">${capitalizar(jogo.cpu)}</span>
+        <div class="table-row">
+          <span class="table-label">🔲 CPU Mínima</span>
+          <span class="table-value">${capitalizar(jogo.cpu)}</span>
         </div>
-        <div class="modal-spec-item">
-          <span class="modal-spec-label">GPU Mínima</span>
-          <span class="modal-spec-value">${capitalizar(jogo.gpu)}</span>
+        <div class="table-row">
+          <span class="table-label">🖥️ GPU Mínima</span>
+          <span class="table-value">${capitalizar(jogo.gpu)}</span>
+        </div>
+        <div class="table-row">
+          <span class="table-label">💵 Preço</span>
+          <span class="table-value">${escaparHTML(jogo.preco)}</span>
+        </div>
+        <div class="table-row">
+          <span class="table-label">💳 Tipo</span>
+          <span class="table-value">${escaparHTML(jogo.pagamento)}</span>
+        </div>
+        <div class="table-row">
+          <span class="table-label">📅 Lançamento</span>
+          <span class="table-value">${jogo.lancamento}</span>
+        </div>
+        <div class="table-row">
+          <span class="table-label">📦 Tamanho</span>
+          <span class="table-value">${escaparHTML(jogo.tamanho)}</span>
+        </div>
+        <div class="table-row">
+          <span class="table-label">👨‍💻 Desenvolvedor</span>
+          <span class="table-value">${escaparHTML(jogo.desenvolvedor)}</span>
+        </div>
+        <div class="table-row">
+          <span class="table-label">⏱️ Duração</span>
+          <span class="table-value">${escaparHTML(jogo.duracao)}</span>
         </div>
       </div>
       
@@ -236,6 +307,7 @@ function resetarFiltros() {
   rangeCpu.value = 3;
   rangeGpu.value = 3;
   filterChecks.forEach(c => c.checked = true);
+  filterGenres.forEach(c => c.checked = true);
   atualizarFiltros();
 }
 
