@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sabor Gamer — Recomendação de Jogos</title>
+  <!-- Google Fonts: Inter e Montserrat -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ========== CABEÇALHO ========== -->
+  <header>
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">🕹️</span>
+        <div>
+          <h1>Sabor Gamer</h1>
+          <p class="tagline">Projeto College — Recomendação de Jogos</p>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <div class="dropdown">
+          <button class="dropbtn">🕹️ Emuladores</button>
+          <div class="dropdown-content">
+            <a href="https://pcsx2.net/" target="_blank">PCSX2 (PS2)</a>
+            <a href="https://duckstation.org/" target="_blank">DuckStation (PS1)</a>
+            <a href="https://ppsspp.org/" target="_blank">PPSSPP (PSP)</a>
+            <a href="https://xenia.jp/" target="_blank">Xenia Canary (Xbox 360)</a>
+            <a href="https://mgba.io/" target="_blank">mGBA (GBA)</a>
+            <a href="https://www.pj64-emu.com/" target="_blank">Project64 (N64)</a>
+            <a href="https://www.snes9x.com/" target="_blank">Snes9x (SNES)</a>
+          </div>
+        </div>
+        <a href="#" id="nav-about">ℹ️ Sobre</a>
+        <a href="https://wa.me/5500000000000" target="_blank" class="support-link">💬 Suporte</a>
+        <button class="btn-auth" id="btn-login">Criar Conta / Entrar</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ========== CONTEÚDO PRINCIPAL ========== -->
+  <main class="main-container">
+
+    <!-- ÁREA DE RESULTADOS (ESQUERDA - GRID DE 3 COLUNAS) -->
+    <section class="results-section" id="results-section">
+      <div class="results-header">
+        <h2 class="section-title">🎯 Jogos Recomendados</h2>
+        <span class="results-count" id="results-count">Carregando...</span>
+      </div>
+
+      <!-- Grid de cards -->
+      <div class="cards-grid" id="cards-grid">
+        <!-- Os cards serão inseridos aqui pelo JavaScript -->
+      </div>
+
+      <!-- Mensagem de nenhum resultado -->
+      <div class="state-placeholder hidden" id="state-empty">
+        <div class="placeholder-icon">😕</div>
+        <p>Nenhum jogo compatível encontrado para essa configuração.<br>
+           Tente ajustar os filtros na lateral.</p>
+      </div>
+    </section>
+
+    <!-- SIDEBAR DE FILTROS (DIREITA - REORGANIZADA) -->
+    <aside class="sidebar-filters">
+      <div class="sidebar-inner">
+        <div class="sidebar-header-row">
+          <h2 class="sidebar-title">⚙️ Personalizar</h2>
+          <button class="info-toggle" id="info-toggle" title="O que é isso?">❓</button>
+        </div>
+        
+        <!-- ADENDO EXPLICATIVO -->
+        <div class="hardware-info hidden" id="hardware-info">
+          <h3>Onde seu PC se encaixa?</h3>
+          <div class="info-table-container">
+            <table class="info-table">
+              <tr><th>Nível</th><th>Exemplos CPU / GPU</th></tr>
+              <tr><td>Fraco</td><td>Celeron / Intel HD</td></tr>
+              <tr><td>Médio</td><td>i5 / GTX 750 Ti</td></tr>
+              <tr><td>Forte</td><td>i7 / RTX 3060+</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="filters-stack">
+
+          <!-- RAM SLIDER -->
+          <div class="filter-group">
+            <div class="filter-label-row">
+              <label for="range-ram">💾 RAM</label>
+              <span class="range-value" id="val-ram">16 GB</span>
+            </div>
+            <input type="range" id="range-ram" min="2" max="16" step="2" value="16" class="slider">
+          </div>
+
+          <!-- CPU SLIDER -->
+          <div class="filter-group">
+            <div class="filter-label-row">
+              <label for="range-cpu">🔲 CPU</label>
+              <span class="range-value" id="val-cpu">Forte</span>
+            </div>
+            <input type="range" id="range-cpu" min="1" max="3" step="1" value="3" class="slider">
+          </div>
+
+          <!-- GPU SLIDER -->
+          <div class="filter-group">
+            <div class="filter-label-row">
+              <label for="range-gpu">🖥️ GPU</label>
+              <span class="range-value" id="val-gpu">Gamer</span>
+            </div>
+            <input type="range" id="range-gpu" min="1" max="3" step="1" value="3" class="slider">
+          </div>
+
+          <!-- PLATAFORMAS (ABAIXO DO HARDWARE) -->
+          <div class="filter-group">
+            <label class="group-label">📂 Plataformas</label>
+            <div class="checkbox-grid">
+              <label class="checkbox-item"><input type="checkbox" class="filter-check" value="PC Steam" checked><span>PC Steam</span></label>
+              <label class="checkbox-item"><input type="checkbox" class="filter-check" value="PS1" checked><span>PS1</span></label>
+              <label class="checkbox-item"><input type="checkbox" class="filter-check" value="PS2" checked><span>PS2</span></label>
+              <label class="checkbox-item"><input type="checkbox" class="filter-check" value="PPSSPP" checked><span>PPSSPP</span></label>
+              <label class="checkbox-item"><input type="checkbox" class="filter-check" value="SNES" checked><span>SNES</span></label>
+              <label class="checkbox-item"><input type="checkbox" class="filter-check" value="GBA" checked><span>GBA</span></label>
+              <label class="checkbox-item"><input type="checkbox" class="filter-check" value="N64" checked><span>N64</span></label>
+            </div>
+          </div>
+
+          <button id="btn-reset" class="btn-secondary">✖ Resetar Filtros</button>
+
+        </div>
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- ========== SEÇÃO DE OTIMIZAÇÃO ========== -->
+  <section class="optimization-section">
+    <div class="container">
+      <h2 class="section-title center">🚀 Otimizações Recomendadas</h2>
+      <div class="optimization-grid">
+        <div class="opt-card"><h3>🧹 Cache</h3><p>Limpe a pasta <code>%temp%</code> regularmente.</p></div>
+        <div class="opt-card"><h3>🗑️ Lixeira</h3><p>Mantenha a lixeira vazia para liberar espaço.</p></div>
+        <div class="opt-card"><h3>⚡ Energia</h3><p>Use o modo 'Alto Desempenho' no Windows.</p></div>
+        <div class="opt-card"><h3>🔄 Startup</h3><p>Desative apps inúteis ao ligar o PC.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== MODAL DE DETALHES ========== -->
+  <div class="modal-overlay hidden" id="modal-overlay">
+    <div class="modal-content">
+      <button class="modal-close" id="modal-close">&times;</button>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- ========== RODAPÉ ========== -->
+  <footer>
+    <p>Sabor Gamer &copy; 2025 — Projeto College de Recomendação de Jogos.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
